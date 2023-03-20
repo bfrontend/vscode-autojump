@@ -11,12 +11,18 @@ interface DbItem {
   path: string
 }
 
+
 class AutoJump {
   db: DbConfig;
   dbItems: DbItem[] = [];
+  config: vscode.WorkspaceConfiguration;
   constructor() {
     this.db = this.getDbPath();
     this.dbItems = this.readDb();
+    this.config = this.getConfig();
+  }
+  getConfig() {
+    return vscode.workspace.getConfiguration('autojump');
   }
   readDb(): DbItem[] {
     try {
@@ -29,7 +35,7 @@ class AutoJump {
         const temp = {weight: parseFloat(weight),path: itemPath};
         pre.push(temp);
         return pre;
-      }, defaultDb);
+      }, defaultDb).sort((a, b) => b.weight - a.weight);
     } catch (error) {
       fs.mkdirSync(path.dirname(this.db.dataPath), { recursive: true });
       fs.writeFileSync(this.db.dataPath, '');
@@ -42,6 +48,21 @@ class AutoJump {
       return pre;
     }, '');
     fs.writeFileSync(this.db.dataPath, dbStr);
+  }
+  updateDb(folder: string, weight: number = 0) {
+    const itemIdx = this.dbItems.findIndex(item => item.path.includes(folder));
+    if (itemIdx !== -1) {
+      this.dbItems.splice(itemIdx, 1, {
+        weight: this.calcWeight(weight),
+        path: folder
+      });
+    } else {
+      this.dbItems.push({
+        weight: this.calcWeight(weight),
+        path: folder
+      });
+    }
+    this.writeDb(this.dbItems);
   }
   calcWeight(weight = 0) {
     return Math.sqrt(weight ** 2 + 10 ** 2);
@@ -59,26 +80,56 @@ class AutoJump {
       backupPath: `${dbPath}/autojump.txt.bak`
     };
   }
+  showChoseFolder(): Thenable<vscode.Uri> {
+    return vscode.window.showOpenDialog({
+      canSelectFiles: false,
+      canSelectFolders: true,
+      canSelectMany: false
+    }).then(folders => {
+      if (folders) {
+        const [folder] = folders;
+        return folder;
+      }
+      return Promise.reject('no Folder');
+    });
+  }
+  showWarnModal(folderAlias: string) {
+    return vscode.window.showWarningMessage(`未找到包含${folderAlias}的文件夹, 是否打开文件夹选择器`, { modal: true }, '否', '是').then(val => {
+      if (val === '是') {
+        return this.showChoseFolder();
+      }
+      return Promise.reject('cancel chose');
+    });
+  }
   async openFolder(){
     const folderAlias = await vscode.window.showInputBox({
       prompt: '请输入文件夹路径别名',
       placeHolder: ''
     });
     if (folderAlias) {
-      const itemIdx = this.dbItems.sort((a, b) => b.weight - a.weight).findIndex(item => item.path.includes(folderAlias));
+      const itemIdx = this.dbItems.findIndex(item => item.path.includes(folderAlias));
       if (itemIdx !== -1) {
         const item = this.dbItems[itemIdx];
-        this.dbItems.splice(itemIdx, 1, {
-          weight: this.calcWeight(item.weight),
-          path: item.path
-        });
-        this.writeDb(this.dbItems);
-        const uri = vscode.Uri.file(item.path);
-        vscode.commands.executeCommand('vscode.openFolder', uri, false);
+        this.updateDb(item.path, item.weight);
+        this.changeFolder(item.path);
       } else {
-        vscode.window.showWarningMessage(`未找到包含${folderAlias}的文件夹`);
+        const isSkipWarnModal= this.config.get('isSkipWarnModal');
+        const continueThenable = isSkipWarnModal
+          ? this.showChoseFolder()
+            : this.showWarnModal(folderAlias);
+        continueThenable.then(folderUri => {
+          this.updateDb(folderUri.path);
+          this.changeFolder(folderUri);
+        });
       }
     }
+  }
+  changeFolder(folder: string | vscode.Uri) {
+    let uri = folder;
+    if (typeof folder === 'string') {
+      uri = vscode.Uri.file(folder);
+    }
+    vscode.commands.executeCommand('vscode.openFolder', uri, false);
   }
 }
 export default AutoJump;

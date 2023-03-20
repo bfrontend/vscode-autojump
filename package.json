@@ -5,7 +5,7 @@
   "icon": "images/icon.png",
   "author": "webxmsj",
   "publisher": "webxmsj",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -20,6 +20,21 @@
 		"url": "https://github.com/webxmsj/vscode-autojump"
   },
   "contributes": {
+    "keybindings": [{
+      "key": "cmd+o",
+      "command": "autojump.openFolder"
+    }],
+    "configuration": {
+      "type": "object",
+      "title": "autojump 配置项",
+      "properties": {
+        "autojump.isSkipWarnModal": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否跳过未找到匹配项时选择文件夹确认弹窗"
+        }
+      }
+    },
     "commands": [
       {
         "command": "autojump.openFolder",
