@@ -10,3 +10,7 @@
   "command": "autojump.openFolder"
 },
 ```
+
+## TODO
+
+* 暂不支持 在未安装autojump的情况下使用(为重新计算权重) WIP
