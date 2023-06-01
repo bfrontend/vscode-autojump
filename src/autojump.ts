@@ -35,7 +35,7 @@ class AutoJump {
         const temp = {weight: parseFloat(weight),path: itemPath};
         pre.push(temp);
         return pre;
-      }, defaultDb).sort((a, b) => b.weight - a.weight);
+      }, defaultDb);
     } catch (error) {
       fs.mkdirSync(path.dirname(this.db.dataPath), { recursive: true });
       fs.writeFileSync(this.db.dataPath, '');
@@ -107,9 +107,9 @@ class AutoJump {
       placeHolder: ''
     });
     if (folderAlias) {
-      const itemIdx = this.dbItems.findIndex(item => item.path.includes(folderAlias));
-      if (itemIdx !== -1) {
-        const item = this.dbItems[itemIdx];
+      const items = this.dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
+      if (items.length) {
+        const item = items[0];
         this.updateDb(item.path, item.weight);
         this.changeFolder(item.path);
       } else {
