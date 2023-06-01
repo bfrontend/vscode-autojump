@@ -19,6 +19,19 @@
 }
 ```
 
-## TODO
+## 如果不需要在终端中使用autojump 或 未安装autojump命令行工具的情况
 
-* ~~暂不支持 在未安装autojump的情况下使用(为重新计算权重) WIP~~
+> 下列步骤任选其一
+
+* 安装命令行工具[autojump](https://github.com/wting/autojump)
+
+```shell
+brew install autojump
+```
+
+* 手动创建记录文件
+
+```shell
+mkdir -p $HOME/Library/autojump   # 创建文件夹
+touch $HOME/Library/autojump/autojump.txt   # 创建文件
+```
