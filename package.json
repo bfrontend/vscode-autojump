@@ -5,7 +5,7 @@
   "icon": "images/icon.png",
   "author": "webxmsj",
   "publisher": "webxmsj",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -34,6 +34,15 @@
           "type": "boolean",
           "default": true,
           "description": "是否跳过未找到匹配项时选择文件夹确认弹窗"
+        },
+        "autojump.smartPlugin": {
+          "type": "string",
+          "default": "",
+          "enum": [
+            "autojump",
+            "z"
+          ],
+          "description": "是否跳过未找到匹配项时选择文件夹确认弹窗"
         }
       }
     },
@@ -46,7 +55,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "compile": "webpack",
+    "compile": "webpack --mode production",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
     "publish": "vsce publish",

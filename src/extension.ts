@@ -1,9 +1,7 @@
 import * as vscode from 'vscode';
-import AutoJump from './autojump';
+import QuickJump from './quickJump';
 
 export function activate(context: vscode.ExtensionContext) {
-  const autoJump = new AutoJump();
-  vscode.commands.registerCommand('autojump.openFolder', autoJump.openFolder.bind(autoJump));
+  const instance = QuickJump.getInstance();
+  vscode.commands.registerCommand('autojump.openFolder', instance.openFolder.bind(instance));
 }
-
-export function deactivate() {}
