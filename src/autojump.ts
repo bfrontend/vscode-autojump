@@ -1,25 +1,20 @@
 import * as fs from 'fs';
-import * as path from 'path';
-import QucikJumpCore, { DbItem } from './QucikJumpCore';
-
-class AutoJump extends QucikJumpCore{
+import QucikJumpCore, { DbCoreItem } from './QucikJumpCore';
+interface DbItem extends DbCoreItem{
+  weight: number
+  path: string
+}
+class AutoJump extends QucikJumpCore<DbItem>{
   parseDb(): DbItem[] {
-    try {
-      const content = fs.readFileSync(this.db.dbpath, { encoding: 'utf-8' });
-      const defaultDb: DbItem[] = [];
-      if (!content) {return [];};
-      return content.split(/\n/g).reduce((pre, cur) => {
-        if (!cur) {return pre;};
-        const [weight, itemPath] = cur.split(/\t/);
-        const temp = {weight: parseFloat(weight),path: itemPath};
-        pre.push(temp);
-        return pre;
-      }, defaultDb);
-    } catch (error) {
-      fs.mkdirSync(path.dirname(this.db.dbpath), { recursive: true });
-      fs.writeFileSync(this.db.dbpath, '');
-      return [];
-    }
+    const content = fs.readFileSync(this.db.dbpath, { encoding: 'utf-8' });
+    if (!content) {return [];};
+    return content.split(/\n/g).reduce((pre, cur) => {
+      if (!cur) {return pre;};
+      const [weight, itemPath] = cur.split(/\t/);
+      const temp = {weight: parseFloat(weight),path: itemPath};
+      pre.push(temp);
+      return pre;
+    }, [] as Array<DbItem>);
   }
   writeDb(dbItems: DbItem[]) {
     const dbStr = dbItems.reduce((pre, cur) => {
@@ -43,7 +38,7 @@ class AutoJump extends QucikJumpCore{
     }
     this.writeDb(this.dbItems);
   }
-  calcWeight(weight = 0) {
+  private calcWeight(weight = 0) {
     return Math.sqrt(weight ** 2 + 10 ** 2);
   }
 }

@@ -1,8 +1,8 @@
 ## autojump README
 
-一个在vscode中使用autojump 的插件
+一个在vscode中快速打开指定文件夹的命令,灵感来源于z、autojump、zoxide
 
-### 你可以在 keybinds.json 中配置如下快捷键 使用 快速打开文件夹 [已自动设置]
+> 你可以在 keybinds.json 中配置如下快捷键 使用 快速打开文件夹 [已自动设置]
 
 ```json
 {
@@ -15,23 +15,10 @@
 
 ```json
 {
-  "autojump.isSkipWarnModal": false // 是否跳过未找到匹配项时使用文件夹选择确认弹窗
+  "autojump.isSkipWarnModal": false, // 是否跳过未找到匹配项时使用文件夹选择确认弹窗
+  "autojump.smartPlugin": "" // 指定使用的数据库来源 z | autojump
 }
 ```
 
-## 如果不需要在终端中使用autojump 或 未安装autojump命令行工具的情况
-
-> 下列步骤任选其一
-
-* 安装命令行工具[autojump](https://github.com/wting/autojump)
-
-```shell
-brew install autojump
-```
-
-* 手动创建记录文件
-
-```shell
-mkdir -p $HOME/Library/autojump   # 创建文件夹
-touch $HOME/Library/autojump/autojump.txt   # 创建文件
-```
+> 如果不指定autojump.smartPlugin 默认按照 autojump/z 的顺序查找对应的数据库文件
+> 如果autojump/z的数据库文件都没找到, 则会在用户的home目录下创建.webxmsj的文件作为数据库文件

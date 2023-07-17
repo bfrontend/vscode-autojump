@@ -4,26 +4,26 @@ export interface DbConfig {
   type: string,
   dbpath: string
 }
-export interface DbItem {
+export interface DbCoreItem {
   weight: number
   path: string
 }
-export default abstract class QucikJumpCore {
+export default abstract class QucikJumpCore<T extends DbCoreItem> {
   db: DbConfig;
   config: vscode.WorkspaceConfiguration;
-  dbItems: Array<DbItem>;
-  constructor(dbInfo: DbConfig) {
+  dbItems;
+  constructor(dbInfo: DbConfig, extensionConfig: vscode.WorkspaceConfiguration) {
     this.db = dbInfo;
-    this.config = this.getConfig();
+    this.config = extensionConfig;
     this.dbItems = this.parseDb();
   }
   // 解析数据库
-  abstract parseDb(): Array<DbItem>;
+  abstract parseDb(): Array<T>;
   // 更新文件别名在数据库中的权重
   abstract updateDb(path: string, weight?: number): void;
 
   getConfig() {
-    return vscode.workspace.getConfiguration('quickjump');
+    return vscode.workspace.getConfiguration('autojump');
   }
   async getAliasFolder() {
     return vscode.window.showInputBox({
@@ -38,6 +38,7 @@ export default abstract class QucikJumpCore {
       uri = vscode.Uri.file(folder);
     }
     vscode.commands.executeCommand('vscode.openFolder', uri, false);
+    this.dbItems = this.parseDb();
   }
   showWarnModal(folderAlias: string) {
     return vscode.window.showWarningMessage(`未找到包含${folderAlias}的文件夹, 是否打开文件夹选择器`, { modal: true }, '否', '是').then(val => {
@@ -70,9 +71,21 @@ export default abstract class QucikJumpCore {
       this.changeFolder(folderUri);
     });
   }
+  showQuickPick(items: Array<T>) {
+    const pickItems = items.map(k => k.path);
+    return vscode.window.showQuickPick(pickItems).then(folder => {
+      const chosedItem = items.find(m => m.path === folder);
+      this.updateDb(chosedItem!.path, chosedItem!.weight);
+      this.changeFolder(chosedItem!.path);
+    });
+  }
   async openFolder(){
     const folderAlias = await this.getAliasFolder();
     if (!folderAlias) {return;};
+    if (!this.dbItems.length) {
+      this.doNoMatch(folderAlias);
+      return;
+    }
     const items = this.dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
     if (!items.length) {
       this.doNoMatch(folderAlias);
@@ -83,7 +96,7 @@ export default abstract class QucikJumpCore {
       this.updateDb(item.path, item.weight);
       this.changeFolder(item.path);
     } else {
-      // TODO: 有多个潜在的匹配项 展示选择列表
+      this.showQuickPick(items);
     }
   }
 }

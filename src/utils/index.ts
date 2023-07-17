@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as vscode from 'vscode';
 type IPluginTypes = 'autojump' | 'z' | 'webxmsj';
 type IPluginMap = {
   [key in IPluginTypes]: string | Array<string>
@@ -29,20 +30,31 @@ function getExistPath(pluginDb: string | Array<string>): string | undefined {
     return isExist ? pluginDb : '';
   }
 }
-export function getSupported() {
-  const pluginMap = generateSupports();
+export function getExtensionConfig(): vscode.WorkspaceConfiguration {
+  return vscode.workspace.getConfiguration('autojump');
+}
+function getDbWithName(pluginMap: IPluginMap, name: IPluginTypes) {
+  const pluginDb: string | Array<string> = pluginMap[name];
+  const existPath = getExistPath(pluginDb);
+  return existPath ? {
+    type: name,
+    dbpath: existPath
+  } : undefined;
+}
+function getDbInMaps(pluginMap: IPluginMap) {
   let pluginName: IPluginTypes;
-  let result = null;
   for (pluginName in pluginMap) {
-    const pluginDb: string | Array<string> = pluginMap[pluginName];
-    const existPath = getExistPath(pluginDb);
-    if (existPath) {
-      result = {
-        type: pluginName,
-        dbpath: existPath
-      };
-      break;
-    }
+    return getDbWithName(pluginMap, pluginName);
+  }
+}
+export function getSupported(type?: IPluginTypes) {
+  const pluginMap = generateSupports();
+  let result = null;
+  if (type) {
+    result = getDbWithName(pluginMap,type);
+    !result && vscode.window.showErrorMessage(`名称为${type}的插件未找到,将使用默认数据管理工具`);
+  } else {
+    result = getDbInMaps(pluginMap);
   }
   if (!result) {
     fs.writeFileSync(pluginMap.webxmsj as string, '');
