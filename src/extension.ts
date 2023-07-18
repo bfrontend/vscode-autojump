@@ -4,4 +4,5 @@ import QuickJump from './quickJump';
 export function activate(context: vscode.ExtensionContext) {
   const instance = QuickJump.getInstance();
   vscode.commands.registerCommand('autojump.openFolder', instance.openFolder.bind(instance));
+  vscode.commands.registerCommand('autojump.revealFolder', instance.revealFolder.bind(instance));
 }

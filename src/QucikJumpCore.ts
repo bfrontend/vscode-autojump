@@ -71,32 +71,74 @@ export default abstract class QucikJumpCore<T extends DbCoreItem> {
       this.changeFolder(folderUri);
     });
   }
-  showQuickPick(items: Array<T>) {
+  showQuickPick(folderAlias: string, items: Array<T>) {
     const pickItems = items.map(k => k.path);
     return vscode.window.showQuickPick(pickItems).then(folder => {
       const chosedItem = items.find(m => m.path === folder);
-      this.updateDb(chosedItem!.path, chosedItem!.weight);
-      this.changeFolder(chosedItem!.path);
+      return {
+        alias: folderAlias,
+        item: chosedItem
+      };
     });
   }
-  async openFolder(){
+  private async getFolderFromAlias() {
     const folderAlias = await this.getAliasFolder();
     if (!folderAlias) {return;};
-    if (!this.dbItems.length) {
-      this.doNoMatch(folderAlias);
-      return;
-    }
     const items = this.dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
-    if (!items.length) {
-      this.doNoMatch(folderAlias);
-      return;
-    };
-    if (items.length === 1) {
-      const item = items[0];
-      this.updateDb(item.path, item.weight);
-      this.changeFolder(item.path);
+    if (items.length <= 1) {
+      return {
+        alias: folderAlias,
+        item: !items.length ? null : items[0]
+      };
     } else {
-      this.showQuickPick(items);
+      return this.showQuickPick(folderAlias, items);
+    }
+  }
+  private getProjectPath() {
+    let currentUri: vscode.Uri | undefined;
+    if (Array.isArray(vscode.workspace.workspaceFolders)) {
+      if (vscode.workspace.workspaceFolders.length === 1) {
+        currentUri = vscode.workspace.workspaceFolders[0].uri;
+      }
+      else if (vscode.workspace.workspaceFolders.length > 1) {
+        const activeTextEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+        if (activeTextEditor) {
+          const workspaceFolder = vscode.workspace.workspaceFolders.find((folder: any) =>
+            activeTextEditor.document.uri.path.startsWith(folder.uri.path),
+          );
+          if (workspaceFolder)
+            {currentUri = workspaceFolder.uri;};
+        }
+      }
+      return currentUri;
+    }
+  }
+  async revealFolder() {
+    const result = await this.getFolderFromAlias();
+    if (!result) {return;};
+    if (!result.item) {
+      const projectPath = this.getProjectPath();
+      if (this.config.isRevealCurrent) {
+        if (projectPath) {
+          vscode.commands.executeCommand('revealFileInOS', projectPath);
+        }
+      } else {
+        vscode.window.showInformationMessage(`未找到包含${result.alias}的文件夹`);
+      }
+    } else {
+      // ? 是否需要更新数据
+      // this.updateDb(result.item.path, result.item.weight);
+      vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(result.item.path));
+    }
+  }
+  async openFolder(){
+    const result = await this.getFolderFromAlias();
+    if (!result) {return;};
+    if (!result.item) {
+      this.doNoMatch(result.alias);
+    } else {
+      this.updateDb(result.item.path, result.item.weight);
+      this.changeFolder(result.item.path);
     }
   }
 }
