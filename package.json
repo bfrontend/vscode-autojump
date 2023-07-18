@@ -5,7 +5,7 @@
   "icon": "images/icon.png",
   "author": "webxmsj",
   "publisher": "webxmsj",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -24,6 +24,10 @@
       {
         "key": "cmd+o",
         "command": "autojump.openFolder"
+      },
+      {
+        "key": "shift+cmd+o",
+        "command": "autojump.revealFolder"
       }
     ],
     "configuration": {
@@ -34,6 +38,11 @@
           "type": "boolean",
           "default": true,
           "description": "是否跳过未找到匹配项时选择文件夹确认弹窗"
+        },
+        "autojump.isRevealCurrent": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在未找到匹配项时在finder中显示当前工作文件夹"
         },
         "autojump.smartPlugin": {
           "type": "string",
@@ -50,6 +59,10 @@
       {
         "command": "autojump.openFolder",
         "title": "快速打开文件夹"
+      },
+      {
+        "command": "autojump.revealFolder",
+        "title": "快速在finder中显示"
       }
     ]
   },
