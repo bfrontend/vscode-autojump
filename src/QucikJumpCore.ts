@@ -105,14 +105,13 @@ export default abstract class QucikJumpCore<T extends DbCoreItem = DbCoreItem> {
   }
   async revealFolder() {
     const result = await this.getFolderFromAlias();
-    if (!result) {return;};
-    if (!result.item) {
+    if (!result?.item) {
       const projectPath = this.getProjectPath();
       if (this.config.isRevealCurrent) {
         if (projectPath) {
           vscode.commands.executeCommand('revealFileInOS', projectPath);
         }
-      } else {
+      } else if (result?.alias) {
         vscode.window.showInformationMessage(`未找到包含${result.alias}的文件夹`);
       }
     } else {
