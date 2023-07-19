@@ -1,12 +1,33 @@
 import * as fs from 'fs';
+import * as vscode from 'vscode';
+import { getUserHome } from './utils';
 import QucikJumpCore, { DbCoreItem } from './QucikJumpCore';
 interface DbItem extends DbCoreItem{
   weight: number
   path: string
 }
+
 class AutoJump extends QucikJumpCore<DbItem>{
+  dbPath!: string;
+  static pluginName = 'autojump';
+  static getIsSupported() {
+    const userHome = getUserHome();
+    const possiblePaths = [
+      `${userHome}/Library/autojump/autojump.txt`,
+      `${userHome}/autojump/autojump.txt`,
+      `${userHome}/Library/autojump/autojump.txt`
+    ];
+    return possiblePaths.find(item => fs.existsSync(item));
+  }
+  constructor(extensionConfig: vscode.WorkspaceConfiguration) {
+    super(extensionConfig);
+    const supported = AutoJump.getIsSupported();
+    if (supported) {
+      this.dbPath = supported;
+    }
+  }
   parseDb(): DbItem[] {
-    const content = fs.readFileSync(this.db.dbpath, { encoding: 'utf-8' });
+    const content = fs.readFileSync(this.dbPath, { encoding: 'utf-8' });
     if (!content) {return [];};
     return content.split(/\n/g).reduce((pre, cur) => {
       if (!cur) {return pre;};
@@ -16,27 +37,32 @@ class AutoJump extends QucikJumpCore<DbItem>{
       return pre;
     }, [] as Array<DbItem>);
   }
+  getFolderFromDb(folderAlias: string) {
+    const dbItems = this.parseDb();
+    return dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
+  }
   writeDb(dbItems: DbItem[]) {
     const dbStr = dbItems.reduce((pre, cur) => {
       pre += `${cur.weight}\t${cur.path}\n`;
       return pre;
     }, '');
-    fs.writeFileSync(this.db.dbpath, dbStr);
+    fs.writeFileSync(this.dbPath, dbStr);
   }
   updateDb(folder: string, weight: number = 0) {
-    const itemIdx = this.dbItems.findIndex(item => item.path.includes(folder));
+    const dbItems = this.parseDb();
+    const itemIdx = dbItems.findIndex(item => item.path.includes(folder));
     if (itemIdx !== -1) {
-      this.dbItems.splice(itemIdx, 1, {
+      dbItems.splice(itemIdx, 1, {
         weight: this.calcWeight(weight),
         path: folder
       });
     } else {
-      this.dbItems.push({
+      dbItems.push({
         weight: this.calcWeight(weight),
         path: folder
       });
     }
-    this.writeDb(this.dbItems);
+    this.writeDb(dbItems);
   }
   private calcWeight(weight = 0) {
     return Math.sqrt(weight ** 2 + 10 ** 2);

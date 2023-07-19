@@ -1,6 +1,6 @@
 ## autojump README
 
-一个在vscode中快速打开指定文件夹的命令,灵感来源于z、autojump、zoxide
+一个在vscode中快速打开指定文件夹的命令,支持z、autojump、zoxide
 
 > 你可以在 keybinds.json 中配置如下快捷键 使用 快速打开文件夹 [已自动设置]
 
