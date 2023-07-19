@@ -1,26 +1,17 @@
 import * as vscode from 'vscode';
 
-export interface DbConfig {
-  type: string,
-  dbpath: string
-}
 export interface DbCoreItem {
-  weight: number
   path: string
+  weight?: number
 }
-export default abstract class QucikJumpCore<T extends DbCoreItem> {
-  db: DbConfig;
+export default abstract class QucikJumpCore<T extends DbCoreItem = DbCoreItem> {
   config: vscode.WorkspaceConfiguration;
-  dbItems;
-  constructor(dbInfo: DbConfig, extensionConfig: vscode.WorkspaceConfiguration) {
-    this.db = dbInfo;
+  constructor(extensionConfig: vscode.WorkspaceConfiguration) {
     this.config = extensionConfig;
-    this.dbItems = this.parseDb();
   }
-  // 解析数据库
-  abstract parseDb(): Array<T>;
   // 更新文件别名在数据库中的权重
   abstract updateDb(path: string, weight?: number): void;
+  abstract getFolderFromDb(query?: string): Array<T>;
 
   getConfig() {
     return vscode.workspace.getConfiguration('autojump');
@@ -38,7 +29,6 @@ export default abstract class QucikJumpCore<T extends DbCoreItem> {
       uri = vscode.Uri.file(folder);
     }
     vscode.commands.executeCommand('vscode.openFolder', uri, false);
-    this.dbItems = this.parseDb();
   }
   showWarnModal(folderAlias: string) {
     return vscode.window.showWarningMessage(`未找到包含${folderAlias}的文件夹, 是否打开文件夹选择器`, { modal: true }, '否', '是').then(val => {
@@ -84,7 +74,7 @@ export default abstract class QucikJumpCore<T extends DbCoreItem> {
   private async getFolderFromAlias() {
     const folderAlias = await this.getAliasFolder();
     if (!folderAlias) {return;};
-    const items = this.dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
+    const items = this.getFolderFromDb(folderAlias);
     if (items.length <= 1) {
       return {
         alias: folderAlias,

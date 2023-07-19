@@ -1,11 +1,29 @@
 import * as fs from 'fs';
+import * as vscode from 'vscode';
 import QucikJumpCore, { DbCoreItem } from "./QucikJumpCore";
+import { getUserHome } from './utils';
 interface DbItem extends DbCoreItem{
+  weight: number
   time: number
 }
 export default class ZPlugin extends QucikJumpCore<DbItem> {
+  dbPath!: string;
+  static pluginName = 'z';
+  static getIsSupported() {
+    const userHome = getUserHome();
+    const dbPath = `${userHome}/.z`;
+    const isExist = fs.existsSync(dbPath);
+    return isExist ? dbPath : false;
+  }
+  constructor(extensionConfig: vscode.WorkspaceConfiguration) {
+    super(extensionConfig);
+    const supported = ZPlugin.getIsSupported();
+    if (supported) {
+      this.dbPath = supported;
+    }
+  }
   parseDb(): DbItem[] {
-    const content = fs.readFileSync(this.db.dbpath, { encoding: 'utf-8' });
+    const content = fs.readFileSync(this.dbPath, { encoding: 'utf-8' });
     if (!content) {return [];};
     return content.split(/\n/g).reduce((pre, cur) => {
       if (!cur) {return pre;};
@@ -15,28 +33,33 @@ export default class ZPlugin extends QucikJumpCore<DbItem> {
       return pre;
     }, [] as Array<DbItem>);
   }
+  getFolderFromDb(folderAlias: string) {
+    const dbItems = this.parseDb();
+    return dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
+  }
   updateDb(folder: string, weight?: number): void {
-    const itemIdx = this.dbItems.findIndex(item => item.path.includes(folder));
+    const dbItems = this.parseDb();
+    const itemIdx = dbItems.findIndex(item => item.path.includes(folder));
     if (itemIdx !== -1) {
-      this.dbItems.splice(itemIdx, 1, {
-        weight: this.dbItems[itemIdx].weight + 1,
+      dbItems.splice(itemIdx, 1, {
+        weight: dbItems[itemIdx].weight + 1,
         path: folder,
         time: Math.floor(Date.now() / 1000)
       });
     } else {
-      this.dbItems.push({
+      dbItems.push({
         weight: 1,
         path: folder,
         time: Math.floor(Date.now() / 1000)
       });
     }
-    this.writeDb(this.dbItems);
+    this.writeDb(dbItems);
   }
   private writeDb(dbItems: DbItem[]) {
     const dbStr = dbItems.reduce((pre, cur) => {
       pre += `${cur.path}|${cur.weight}|${cur.time}\n`;
       return pre;
     }, '');
-    fs.writeFileSync(this.db.dbpath, dbStr);
+    fs.writeFileSync(this.dbPath, dbStr);
   }
 }

@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Release History
 
+- v0.0.6
+
+  - 添加对zoxide的支持
+
 - v0.0.5
 
   - 新增autojump.revealFolder命令(在finder中显示指定文件夹), 默认绑定的快捷键是shift+cmd+o
