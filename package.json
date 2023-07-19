@@ -5,7 +5,7 @@
   "icon": "images/icon.png",
   "author": "webxmsj",
   "publisher": "webxmsj",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "engines": {
     "vscode": "^1.76.0"
   },
