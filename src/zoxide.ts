@@ -9,9 +9,9 @@ export default class ZPlugin extends QucikJumpCore {
   }
   getFolderFromDb(folderAlias: string) {
     const matchedPath = execSync(`zoxide query ${folderAlias} -l`, {encoding: 'utf-8'});
-    return [{
-      path: matchedPath.replace(/[\r\n]/g, '')
-    }];
+    return matchedPath.split('\n').filter(Boolean).map(k => ({
+      path: k.replace(/[\r\n]/g, '')
+    }));
   }
   updateDb(folder: string, weight?: number): void {
     execSync(`zoxide add ${folder}`, {encoding: 'utf-8'});
