@@ -22,7 +22,9 @@
 ### 可供使用的配置项
 
 > `autojump.isSkipWarnModal`: 是否跳过未找到匹配项时使用文件夹选择确认弹窗
+
 > `autojump.smartPlugin`: 指定使用的数据库来源 z | autojump | zoxide
+
 > `autojump.isRevealCurrent`: 是否在未找到匹配项时在finder中显示当前工作文件夹
 
 ```json

@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Release History
 
+- v0.0.9
+
+  - 添加在不出入别名时,执行对应的打卡文件夹或预览文件夹的行为
+
 - v0.0.8
 
   - 修复zoxide匹配到多个时 命令执行报错的问题

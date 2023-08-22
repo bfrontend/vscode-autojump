@@ -22,7 +22,9 @@ A command to quickly open a specific folder in VS Code, supporting z, autojump, 
 ### Available configuration options
 
 > `autojump.isSkipWarnModal`: Enable folder selection confirmation dialog when skipping unmatched items
+
 > `autojump.smartPlugin`: Specify the database source to use: z | autojump | zoxide
+
 > `autojump.isRevealCurrent`: Show current working folder in Finder when no matches are found.
 
 ```json

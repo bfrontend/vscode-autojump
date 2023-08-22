@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import QucikJumpCore, { DbCoreItem } from "./QucikJumpCore";
+import QuickJumpCore, { DbCoreItem } from "./QuickJumpCore";
 import { getUserHome } from './utils';
 interface DbItem extends DbCoreItem {
   weight: number
   path: string
 }
-export default class Webxmsj extends QucikJumpCore<DbItem> {
+export default class Webxmsj extends QuickJumpCore<DbItem> {
   dbPath!: string;
   static pluginName = 'webxmsj';
   static getIsSupported() {

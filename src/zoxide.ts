@@ -1,8 +1,8 @@
 import { execSync } from 'child_process';
-import QucikJumpCore from "./QucikJumpCore";
+import QuickJumpCore from "./QuickJumpCore";
 import * as which from 'which';
 
-export default class ZPlugin extends QucikJumpCore {
+export default class ZPlugin extends QuickJumpCore {
   static pluginName = 'zoxide';
   static getIsSupported() {
     return which.sync('zoxide', { nothrow: true }) !== null;
