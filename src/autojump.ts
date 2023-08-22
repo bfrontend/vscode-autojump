@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { getUserHome } from './utils';
-import QucikJumpCore, { DbCoreItem } from './QucikJumpCore';
+import QuickJumpCore, { DbCoreItem } from './QuickJumpCore';
 interface DbItem extends DbCoreItem{
   weight: number
   path: string
 }
 
-class AutoJump extends QucikJumpCore<DbItem>{
+class AutoJump extends QuickJumpCore<DbItem>{
   dbPath!: string;
   static pluginName = 'autojump';
   static getIsSupported() {

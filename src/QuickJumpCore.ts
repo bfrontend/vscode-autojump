@@ -4,7 +4,7 @@ export interface DbCoreItem {
   path: string
   weight?: number
 }
-export default abstract class QucikJumpCore<T extends DbCoreItem = DbCoreItem> {
+export default abstract class QuickJumpCore<T extends DbCoreItem = DbCoreItem> {
   config: vscode.WorkspaceConfiguration;
   constructor(extensionConfig: vscode.WorkspaceConfiguration) {
     this.config = extensionConfig;
@@ -73,15 +73,14 @@ export default abstract class QucikJumpCore<T extends DbCoreItem = DbCoreItem> {
   }
   private async getFolderFromAlias() {
     const folderAlias = await this.getAliasFolder();
-    if (!folderAlias) {return;};
-    const items = this.getFolderFromDb(folderAlias);
+    const items = folderAlias ? this.getFolderFromDb(folderAlias) : [];
     if (items.length <= 1) {
       return {
         alias: folderAlias,
         item: !items.length ? null : items[0]
       };
     } else {
-      return this.showQuickPick(folderAlias, items);
+      return this.showQuickPick(folderAlias ?? '', items);
     }
   }
   private getProjectPath() {
@@ -124,7 +123,7 @@ export default abstract class QucikJumpCore<T extends DbCoreItem = DbCoreItem> {
     const result = await this.getFolderFromAlias();
     if (!result) {return;};
     if (!result.item) {
-      this.doNoMatch(result.alias);
+      this.doNoMatch(result.alias ?? '');
     } else {
       this.updateDb(result.item.path, result.item.weight);
       this.changeFolder(result.item.path);

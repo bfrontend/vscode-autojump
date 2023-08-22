@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import QucikJumpCore, { DbCoreItem } from "./QucikJumpCore";
+import QuickJumpCore, { DbCoreItem } from "./QuickJumpCore";
 import { getUserHome } from './utils';
 interface DbItem extends DbCoreItem{
   weight: number
   time: number
 }
-export default class ZPlugin extends QucikJumpCore<DbItem> {
+export default class ZPlugin extends QuickJumpCore<DbItem> {
   dbPath!: string;
   static pluginName = 'z';
   static getIsSupported() {
