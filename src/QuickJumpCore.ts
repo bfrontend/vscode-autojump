@@ -73,6 +73,7 @@ export default abstract class QuickJumpCore<T extends DbCoreItem = DbCoreItem> {
   }
   private async getFolderFromAlias() {
     const folderAlias = await this.getAliasFolder();
+    if (!folderAlias) return;
     const items = folderAlias ? this.getFolderFromDb(folderAlias) : [];
     if (items.length <= 1) {
       return {
