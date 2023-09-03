@@ -2,10 +2,16 @@
   "name": "autojump",
   "displayName": "use autojump in vscode",
   "description": "Quick folders open and data is shared with autojump",
+  "keywords": [
+    "vscode",
+    "autojump",
+    "zoxide",
+    "z"
+  ],
   "icon": "images/icon.png",
   "author": "webxmsj",
   "publisher": "webxmsj",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -38,6 +44,11 @@
           "type": "boolean",
           "default": true,
           "description": "是否跳过未找到匹配项时选择文件夹确认弹窗"
+        },
+        "autojump.isCancel": {
+          "type": "boolean",
+          "default": true,
+          "description": "取消时是否跳过文件夹选择器"
         },
         "autojump.isRevealCurrent": {
           "type": "boolean",

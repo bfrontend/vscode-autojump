@@ -73,6 +73,10 @@ export default abstract class QuickJumpCore<T extends DbCoreItem = DbCoreItem> {
   }
   private async getFolderFromAlias() {
     const folderAlias = await this.getAliasFolder();
+    const isCancel = this.config.get("isCancel");
+    if (isCancel && !folderAlias) {
+      return;
+    }
     const items = folderAlias ? this.getFolderFromDb(folderAlias) : [];
     if (items.length <= 1) {
       return {
@@ -104,19 +108,27 @@ export default abstract class QuickJumpCore<T extends DbCoreItem = DbCoreItem> {
   }
   async revealFolder() {
     const result = await this.getFolderFromAlias();
+    if (!result) {
+      return;
+    }
     if (!result?.item) {
       const projectPath = this.getProjectPath();
-      if (this.config.isRevealCurrent) {
+      if (this.config.get('isRevealCurrent')) {
         if (projectPath) {
-          vscode.commands.executeCommand('revealFileInOS', projectPath);
+          vscode.commands.executeCommand("revealFileInOS", projectPath);
         }
       } else if (result?.alias) {
-        vscode.window.showInformationMessage(`未找到包含${result.alias}的文件夹`);
+        vscode.window.showInformationMessage(
+          `未找到包含${result.alias}的文件夹`
+        );
       }
     } else {
       // ? 是否需要更新数据
       // this.updateDb(result.item.path, result.item.weight);
-      vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(result.item.path));
+      vscode.commands.executeCommand(
+        "revealFileInOS",
+        vscode.Uri.file(result.item.path)
+      );
     }
   }
   async openFolder(){
