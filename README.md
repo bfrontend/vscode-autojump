@@ -27,10 +27,13 @@ A command to quickly open a specific folder in VS Code, supporting z, autojump, 
 
 > `autojump.isRevealCurrent`: Show current working folder in Finder when no matches are found.
 
+> `autojump.isCancel`: Skip folder selector when canceled
+
 ```json
 {
   "autojump.isSkipWarnModal": false,
-  "autojump.smartPlugin": ""
+  "autojump.smartPlugin": "",
+  "autojump.isCancel": true,
   "autojump.isRevealCurrent": true
 }
 ```

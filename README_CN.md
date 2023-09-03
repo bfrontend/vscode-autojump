@@ -27,10 +27,13 @@
 
 > `autojump.isRevealCurrent`: 是否在未找到匹配项时在finder中显示当前工作文件夹
 
+> `autojump.isCancel`: 取消时是否跳过文件夹选择器
+
 ```json
 {
   "autojump.isSkipWarnModal": false,
-  "autojump.smartPlugin": ""
+  "autojump.smartPlugin": "",
+  "autojump.isCancel": true,
   "autojump.isRevealCurrent": true
 }
 ```
