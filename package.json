@@ -1,7 +1,7 @@
 {
   "name": "autojump",
   "displayName": "use autojump in vscode",
-  "description": "Quick folders open and data is shared with autojump",
+  "description": "Quick folders open and data is shared with autojump/z/zoxide",
   "keywords": [
     "vscode",
     "autojump",
@@ -11,7 +11,7 @@
   "icon": "images/icon.png",
   "author": "webxmsj",
   "publisher": "webxmsj",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "engines": {
     "vscode": "^1.76.0"
   },

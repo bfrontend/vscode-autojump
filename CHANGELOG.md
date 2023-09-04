@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Release History
 
+- v0.0.11
+
+  - 区分取消操作、确定但未输入内容的行为
+
+- v0.0.10
+
+  - 新增autojump.isCancel配置项 按下取消键(esc)时是否打开文件夹选择器
+
 - v0.0.9
 
   - 添加在不出入别名时,执行对应的打卡文件夹或预览文件夹的行为
