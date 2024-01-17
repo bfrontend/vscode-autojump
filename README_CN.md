@@ -29,12 +29,15 @@
 
 > `autojump.isCancel`: 取消时是否跳过文件夹选择器
 
+> autojump.ignoreCase 是否忽略大小写
+
 ```json
 {
   "autojump.isSkipWarnModal": false,
   "autojump.smartPlugin": "",
   "autojump.isCancel": true,
-  "autojump.isRevealCurrent": true
+  "autojump.isRevealCurrent": true,
+  "autojump.ignoreCase": false
 }
 ```
 

@@ -39,7 +39,11 @@ class AutoJump extends QuickJumpCore<DbItem>{
   }
   getFolderFromDb(folderAlias: string) {
     const dbItems = this.parseDb();
-    return dbItems.filter(item => item.path.includes(folderAlias)).sort((a,b)=>b.weight - a.weight);
+    const ignoreCase = this.config.get("ignoreCase");
+    const aliasReg = new RegExp(folderAlias, ignoreCase ? "i" : "");
+    return dbItems
+      .filter((item) => aliasReg.test(item.path))
+      .sort((a, b) => b.weight - a.weight);
   }
   writeDb(dbItems: DbItem[]) {
     const dbStr = dbItems.reduce((pre, cur) => {

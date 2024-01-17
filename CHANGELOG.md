@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Release History
 
+- v0.0.12
+
+  - 新增是否忽略大小写的参数(autojump.ignoreCase),默认false
+
 - v0.0.11
 
   - 区分取消操作、确定但未输入内容的行为

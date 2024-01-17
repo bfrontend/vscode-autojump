@@ -29,12 +29,15 @@ A command to quickly open a specific folder in VS Code, supporting z, autojump, 
 
 > `autojump.isCancel`: Skip folder selector when canceled
 
+> `autojump.ignoreCase`: Whether to ignore case
+
 ```json
 {
   "autojump.isSkipWarnModal": false,
   "autojump.smartPlugin": "",
   "autojump.isCancel": true,
-  "autojump.isRevealCurrent": true
+  "autojump.isRevealCurrent": true,
+  "autojump.ignoreCase": false
 }
 ```
 
