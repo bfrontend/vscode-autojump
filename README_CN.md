@@ -45,10 +45,3 @@
 * 如果autojump/z/zoxide的数据库文件都没找到, 则会在用户的home目录下创建.webxmsj的文件作为数据库文件
 * 新增autojump.revealFolder命令(在finder中显示指定文件夹), 默认绑定的快捷键是shift+cmd+o
 * 新增autojump.isRevealCurrent配置项, 通过别名未找到文件夹是是否在finder中显示当前工作文件
-
-<a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-
-<div style="display:flex;height: 300px;gap: 20px;">
-<img src="https://cdn.staticaly.com/gh/webxmsj/picx-images-hosting@master/611693473392_.pic.758unr4lga80.webp" style="width: 200px" alt="alipay"></img>
-<img src="https://cdn.staticaly.com/gh/webxmsj/picx-images-hosting@master/601693473391_.pic.6w0ja764mnk0.webp" style="width: 200px" alt="wechat"></img>
-</div>
